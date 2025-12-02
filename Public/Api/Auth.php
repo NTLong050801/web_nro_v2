@@ -29,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recaptchaToken = $_POST['recaptcha_token'] ?? '';
     $userIP = getUserIP();
 
-    if (!verifyRecaptcha($recaptchaToken, RECAPTCHA_SECRET_KEY)) {
-         sendResponse('error', 'Xác thực reCAPTCHA không thành công.');
-     }
+//    if (!verifyRecaptcha($recaptchaToken, RECAPTCHA_SECRET_KEY)) {
+//         sendResponse('error', 'Xác thực reCAPTCHA không thành công.');
+//     }
 
     $username = sanitizeInput($_POST['username'] ?? '');
     $password = $_POST['password'] ?? ''; // Không dùng sanitizeInput để tránh mất ký tự đặc biệt của hash
@@ -53,7 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($password === $user['password']) {
                 $_SESSION['ImSynZx_Login'] = $user['username'];
-                sendResponse('Success', 'Đăng nhập thành công.');
+                sendResponse('success', 'Đăng nhập thành công.');
+
             } else {
                 sendResponse('error', 'Tên người dùng hoặc mật khẩu không đúng.');
             }
@@ -76,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $Connect->prepare("INSERT INTO `{$ImSGame}`.users (username, password) VALUES (:username, :password)");
         $stmt->execute(['username' => $username, 'password' => $password]);
         $userId = $Connect->lastInsertId();
-        sendResponse('Success', 'Đăng ký thành công.', $userId);
+        sendResponse('success', 'Đăng ký thành công.', $userId);
     } else {
         sendResponse('error', 'Yêu cầu không hợp lệ.');
     }
