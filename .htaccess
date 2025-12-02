@@ -1,0 +1,67 @@
+RewriteEngine On
+RewriteBase /
+
+# Kiểm tra nếu tệp hoặc thư mục không tồn tại
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Định hướng trang gốc về index.php
+RewriteRule ^$ /Index.php [L]
+
+# TRANG XÁC THỰC
+RewriteRule ^Home$ /Index.php [L]
+RewriteRule ^Auth/(Login|Register|Logout|ForgotPassword)$ /Pages/Auth/$1.php [L]
+
+# TRANG NGƯỜI DÙNG
+RewriteRule ^Users/(Profile|Payments|Exchange|History|Password|Admin)$ /Public/Pages/Users/$1.php [L]
+RewriteRule ^Cron/Vcb$ /Public/Api/Atm/CronVcb.php [L]
+
+# DIỄN ĐÀN VÀ XẾP HẠNG
+RewriteRule ^Others/(Post|Top|Tutorial)$ /Public/Pages/Others/$1.php [L]
+
+# ĐƯỜNG DẪN API
+RewriteRule ^Api/(Auth|Logout|Forum|Comments|Recover)$ /Public/Api/$1.php [L]
+RewriteRule ^Api/Users/(Password|Card|Active|Admin|CardHistory|AtmHistory|Gold)$ /Public/Api/Users/$1.php [L]
+
+
+# CẤU HÌNH TRANG LỖI
+ErrorDocument 404 /Home
+ErrorDocument 500 "Vui lòng thử lại sau 1 phút nữa."
+
+# Tắt chỉ mục thư mục
+Options -Indexes
+
+# Cấu hình kiểu MIME cho tệp .ipa, .apk, .rar, .jar
+AddType application/octet-stream .ipa .apk .rar .jar
+
+# Cache cho các tệp tĩnh như hình ảnh, CSS, JS
+<FilesMatch "\.(jpg|jpeg|png|gif|svg|css|js)$">
+    Header set Cache-Control "max-age=31536000, public"
+</FilesMatch>
+
+# Nén các tệp với mod_deflate
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/plain
+</IfModule>
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Chặn request không có User-Agent hoặc có User-Agent nghi ngờ
+RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+RewriteCond %{HTTP_USER_AGENT} (curl|wget|python|PostmanRuntime) [NC]
+RewriteRule ^ - [F]
+</IfModule>
+
+# Bảo mật HTTP Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "DENY"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
