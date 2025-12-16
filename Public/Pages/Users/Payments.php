@@ -2,113 +2,126 @@
 require_once '../../Controllers/Header.php';
 ?>
 
+<!-- CHỨC NĂNG NẠP TIỀN ĐÃ BỊ VÔ HIỆU HÓA -->
 <div class="card">
-    <div class="card-body">
-        <div class="col-md-12">
-            <div class="row text-center justify-content-center my-1 mb-2">
-                <div class="col-md-12 mb-4">
-                    <div class="row text-center justify-content-center row-cols-2 row-cols-lg-5 g-2 g-lg-2 my-1 mb-2" id="custom-tabs" role="tablist">
-                        <div class="col">
-                            <a class="w-100 fw-semibold active" id="tab-atm" data-toggle="tab" href="#content-atm" role="tab" aria-controls="content-atm" aria-selected="false">
-                                <div class="recharge-method-item active">
-                                    <img src="/Public/Assets/Images/Atm.png" alt="Atm" data-pin-no-hover="true">
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="content-atm" role="tabpanel" aria-labelledby="tab-atm">
-                            <div class="row justify-content-center">
-                                <div class="col-md-8 mt-3">
-                                    <div id="selectedAmountMessage" class="mt-3 text-center"></div>
-                                    <div id="list_atm" class="row text-center justify-content-center row-cols-2 row-cols-lg-3 g-2 g-lg-2 my-1 mb-2">
-                                        <?php if (isset($rechargeOptions) && is_iterable($rechargeOptions)): ?>
-                                            <?php foreach ($rechargeOptions as $option): ?>
-                                                <div class="col">
-                                                    <div class="w-100 fw-semibold cursor-pointer recharge-method-item position-relative nduckien"
-                                                        style="height: 90px;" data-amount="<?= htmlspecialchars($option['displayAmount']) ?>">
-                                                        <div class="price_atm"><?= htmlspecialchars($option['displayAmount']) ?></div>
-                                                        <div class="center-text text-danger"><span>Nhận</span></div>
-                                                        <div class="text-primary"><?= htmlspecialchars($option['displayCoins']) ?></div>
-                                                        <?php if ($option['displayBonus'] !== '0%'): ?>
-                                                            <span class="text-white position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-2"
-                                                                style="z-index: 1;">
-                                                                <?= htmlspecialchars($option['displayBonus']) ?>
-                                                            </span>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </div>
-                                            <?php endforeach; ?>
-                                        <?php else: ?>
-                                            <h6>Không thể thực hiện vui lòng báo cho Admin!</h6>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <div id="atm_info"></div>
-                                    <div class="text-center mt-3 atm-btn">
-                                        <?php if ($_StatusAtm == 0) { ?>
-                                            <button type="button" id="payment_atm" class="w-50 rounded-3 btn btn-primary btn-sm">Thanh toán</button>
-                                        <?php } else { ?>
-                                            <button type="button" class="w-50 rounded-3 btn btn-primary btn-sm disabled" disabled>Đang bảo trì</button>
-                                        <?php } ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="pt-2">
-                                <a href="/Users/History">
-                                    <p class="history">Lịch sử nạp thẻ</p>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade show active" id="custom-tab-content" role="tabpanel" aria-labelledby="tab-atm">
-                            <div class="row justify-content-center">
-                                <div class="col-md-8 mt-3">
-                                    <div>
-                                        <div>
-                                            <div class="table-responsive-sm">
-                                                <table class="fw-semibold mt-3 table">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Ngân hàng</td>
-                                                            <td>Vietcombank ( VCB )</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Chủ tài khoản</td>
-                                                            <td><?= $AChauBank['Name'] ?></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Số tài khoản</td>
-                                                            <td><?= $AChauBank['Account'] ?></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Số tiền</td>
-                                                            <td id="amountDisplay">
-                                                                0đ
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Nội dung</td>
-                                                            <td>naptien <?= $_Id ?></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="text-center fw-semibold fs-5">Quét mã để thanh toán</div>
-                                            <div class="text-center mt-2"><img src="https://img.vietqr.io/image/VCB-<?= $AChauBank['Account'] ?>-qr_only.png?&addInfo=naptien <?= $_Id ?>&accountName=<?= $AChauBank['Name'] ?>" alt="" style="height: 250px;"></div>
-                                        </div>
-                                        <div class="text-center mt-3"><button type="button" id="confirmPaymentDetails" class="w-50 rounded-3 btn btn-primary btn-sm">Xác nhận (60)</button>
-                                            <div class="mt-2"><small class="fw-semibold"><a href="/Users/History">Lịch sử giao dịch</a></small></div>
-                                        </div>
-                                        <div class="mt-4"><small class="fw-semibold">Lưu ý khi thanh toán: Giao dịch trên hoàn toàn được kiểm duyệt tự động, yêu cầu kiểm tra kỹ nội dung chuyển tiền trước khi thực hiện chuyển. Nếu ghi thiếu, sai hoặc quá 10 phút không thấy cộng tiền, các bạn hãy liên hệ với <a target="_blank" href="https://www.facebook.com/vutrungocrong.official" rel="noreferrer">Fanpage</a> để được hỗ trợ<p></p></small></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card-body text-center">
+        <h5 class="text-warning">Chức năng nạp tiền hiện tại đã được tạm thời vô hiệu hóa</h5>
+        <p>Vui lòng liên hệ Admin để biết thêm thông tin</p>
+        <div class="mt-3">
+            <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
         </div>
     </div>
+</div>
+
+<?php
+require_once '../../Controllers/Footer.php';
+?>
+<!--    <div class="card-body">-->
+<!--        <div class="col-md-12">-->
+<!--            <div class="row text-center justify-content-center my-1 mb-2">-->
+<!--                <div class="col-md-12 mb-4">-->
+<!--                    <div class="row text-center justify-content-center row-cols-2 row-cols-lg-5 g-2 g-lg-2 my-1 mb-2" id="custom-tabs" role="tablist">-->
+<!--                        <div class="col">-->
+<!--                            <a class="w-100 fw-semibold active" id="tab-atm" data-toggle="tab" href="#content-atm" role="tab" aria-controls="content-atm" aria-selected="false">-->
+<!--                                <div class="recharge-method-item active">-->
+<!--                                    <img src="/Public/Assets/Images/Atm.png" alt="Atm" data-pin-no-hover="true">-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="tab-content">-->
+<!--                        <div class="tab-pane fade show active" id="content-atm" role="tabpanel" aria-labelledby="tab-atm">-->
+<!--                            <div class="row justify-content-center">-->
+<!--                                <div class="col-md-8 mt-3">-->
+<!--                                    <div id="selectedAmountMessage" class="mt-3 text-center"></div>-->
+<!--                                    <div id="list_atm" class="row text-center justify-content-center row-cols-2 row-cols-lg-3 g-2 g-lg-2 my-1 mb-2">-->
+<!--                                        --><?php //if (isset($rechargeOptions) && is_iterable($rechargeOptions)): ?>
+<!--                                            --><?php //foreach ($rechargeOptions as $option): ?>
+<!--                                                <div class="col">-->
+<!--                                                    <div class="w-100 fw-semibold cursor-pointer recharge-method-item position-relative nduckien"-->
+<!--                                                        style="height: 90px;" data-amount="--><?php //= htmlspecialchars($option['displayAmount']) ?><!--">-->
+<!--                                                        <div class="price_atm">--><?php //= htmlspecialchars($option['displayAmount']) ?><!--</div>-->
+<!--                                                        <div class="center-text text-danger"><span>Nhận</span></div>-->
+<!--                                                        <div class="text-primary">--><?php //= htmlspecialchars($option['displayCoins']) ?><!--</div>-->
+<!--                                                        --><?php //if ($option['displayBonus'] !== '0%'): ?>
+<!--                                                            <span class="text-white position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger-2"-->
+<!--                                                                style="z-index: 1;">-->
+<!--                                                                --><?php //= htmlspecialchars($option['displayBonus']) ?>
+<!--                                                            </span>-->
+<!--                                                        --><?php //endif; ?>
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                            --><?php //endforeach; ?>
+<!--                                        --><?php //else: ?>
+<!--                                            <h6>Không thể thực hiện vui lòng báo cho Admin!</h6>-->
+<!--                                        --><?php //endif; ?>
+<!--                                    </div>-->
+<!---->
+<!--                                    <div id="atm_info"></div>-->
+<!--                                    <div class="text-center mt-3 atm-btn">-->
+<!--                                        --><?php //if ($_StatusAtm == 0) { ?>
+<!--                                            <button type="button" id="payment_atm" class="w-50 rounded-3 btn btn-primary btn-sm">Thanh toán</button>-->
+<!--                                        --><?php //} else { ?>
+<!--                                            <button type="button" class="w-50 rounded-3 btn btn-primary btn-sm disabled" disabled>Đang bảo trì</button>-->
+<!--                                        --><?php //} ?>
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="pt-2">-->
+<!--                                <a href="/Users/History">-->
+<!--                                    <p class="history">Lịch sử nạp thẻ</p>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="tab-pane fade show active" id="custom-tab-content" role="tabpanel" aria-labelledby="tab-atm">-->
+<!--                            <div class="row justify-content-center">-->
+<!--                                <div class="col-md-8 mt-3">-->
+<!--                                    <div>-->
+<!--                                        <div>-->
+<!--                                            <div class="table-responsive-sm">-->
+<!--                                                <table class="fw-semibold mt-3 table">-->
+<!--                                                    <tbody>-->
+<!--                                                        <tr>-->
+<!--                                                            <td>Ngân hàng</td>-->
+<!--                                                            <td>Vietcombank ( VCB )</td>-->
+<!--                                                        </tr>-->
+<!--                                                        <tr>-->
+<!--                                                            <td>Chủ tài khoản</td>-->
+<!--                                                            <td>--><?php //= $AChauBank['Name'] ?><!--</td>-->
+<!--                                                        </tr>-->
+<!--                                                        <tr>-->
+<!--                                                            <td>Số tài khoản</td>-->
+<!--                                                            <td>--><?php //= $AChauBank['Account'] ?><!--</td>-->
+<!--                                                        </tr>-->
+<!--                                                        <tr>-->
+<!--                                                            <td>Số tiền</td>-->
+<!--                                                            <td id="amountDisplay">-->
+<!--                                                                0đ-->
+<!--                                                            </td>-->
+<!--                                                        </tr>-->
+<!--                                                        <tr>-->
+<!--                                                            <td>Nội dung</td>-->
+<!--                                                            <td>naptien --><?php //= $_Id ?><!--</td>-->
+<!--                                                        </tr>-->
+<!--                                                    </tbody>-->
+<!--                                                </table>-->
+<!--                                            </div>-->
+<!--                                            <div class="text-center fw-semibold fs-5">Quét mã để thanh toán</div>-->
+<!--                                            <div class="text-center mt-2"><img src="https://img.vietqr.io/image/VCB---><?php //= $AChauBank['Account'] ?><!---qr_only.png?&addInfo=naptien --><?php //= $_Id ?><!--&accountName=--><?php //= $AChauBank['Name'] ?><!--" alt="" style="height: 250px;"></div>-->
+<!--                                        </div>-->
+<!--                                        <div class="text-center mt-3"><button type="button" id="confirmPaymentDetails" class="w-50 rounded-3 btn btn-primary btn-sm">Xác nhận (60)</button>-->
+<!--                                            <div class="mt-2"><small class="fw-semibold"><a href="/Users/History">Lịch sử giao dịch</a></small></div>-->
+<!--                                        </div>-->
+<!--                                        <div class="mt-4"><small class="fw-semibold">Lưu ý khi thanh toán: Giao dịch trên hoàn toàn được kiểm duyệt tự động, yêu cầu kiểm tra kỹ nội dung chuyển tiền trước khi thực hiện chuyển. Nếu ghi thiếu, sai hoặc quá 10 phút không thấy cộng tiền, các bạn hãy liên hệ với <a target="_blank" href="https://www.facebook.com/vutrungocrong.official" rel="noreferrer">Fanpage</a> để được hỗ trợ<p></p></small></div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 
 <?php

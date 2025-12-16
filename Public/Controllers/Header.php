@@ -217,11 +217,12 @@ if (($_Login === null && strpos($_SERVER['REQUEST_URI'], '/Users/') !== false) |
                             <a class="btn btn-menu btn-danger w-100 fw-semibold active" href="/">Trang chủ</a>
                         </div>
                     </div>
-                    <div class="col">
+                    <!-- Chức năng nạp tiền đã bị vô hiệu hóa -->
+                    <!-- <div class="col">
                         <div class="px-2">
                             <a class="btn btn-menu btn-danger w-100 fw-semibold false" href="/Users/Payments">Nạp tiền</a>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col">
                         <div class="px-2">
                             <a class="btn btn-menu btn-danger w-100 fw-semibold false" id="GiftcodeButton">Xem Giftcode</a>

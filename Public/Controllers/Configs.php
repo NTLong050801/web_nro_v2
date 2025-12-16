@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 try {
-    $Connect = new PDO('mysql:host=localhost', 'root', '');
+    $Connect = new PDO('mysql:host=157.10.45.89', 'dev', '123456');
     $Connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die('Kết nối thất bại: ' . $e->getMessage());
@@ -42,10 +42,10 @@ define('ZALO_URL', 'https://zalo.me/g/npwtwc000');
 
 // Cấu hình Downloads
 $Downloads = [
-    'Android' => ['https://www.mediafire.com/file/n47m1fdqjl103vd/VTNR+Ver+3+-+APK.apk/file'],
-    'Iphone'  => ['https://testflight.apple.com/join/Ut69PCG6'],
-    'Windows' => ['https://www.mediafire.com/file/ceywfz1jhbpmg12/PC_-_VTNR_-_Ver_3.zip/file'],
-    'Java'    => ['https://www.mediafire.com/file/70y08agub52d5lr/Vũ+Trụ+Nro+-+Ver2.jar/file']
+    'Android' => ['/Public/download.php?file=android'],
+    'Iphone'  => ['/Public/download.php?file=iphone'],
+    'Windows' => ['/Public/download.php?file=windows'],
+    'Java'    => ['/Public/download.php?file=java']
 ];
 
 // Lấy giftcode từ CSDL 9nro_player (dùng tên đầy đủ: database.table)

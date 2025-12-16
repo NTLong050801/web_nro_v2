@@ -1,6 +1,10 @@
 RewriteEngine On
 RewriteBase /
 
+# Cho phép download file từ thư mục Assets/Download
+RewriteCond %{REQUEST_URI} ^/Public/Assets/Download/
+RewriteRule ^ - [L]
+
 # Kiểm tra nếu tệp hoặc thư mục không tồn tại
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -20,7 +24,7 @@ RewriteRule ^Cron/Vcb$ /Public/Api/Atm/CronVcb.php [L]
 RewriteRule ^Others/(Post|Top|Tutorial)$ /Public/Pages/Others/$1.php [L]
 
 # ĐƯỜNG DẪN API
-RewriteRule ^Api/(Auth|Logout|Forum|Comments|Recover)$ /Public/Api/$1.php [L]
+RewriteRule ^Api/(Auth|Logout|Forum|Comments|Recover|Download)$ /Public/Api/$1.php [L]
 RewriteRule ^Api/Users/(Password|Card|Active|Admin|CardHistory|AtmHistory|Gold)$ /Public/Api/Users/$1.php [L]
 
 
